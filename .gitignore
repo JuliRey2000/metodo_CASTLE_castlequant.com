@@ -1,0 +1,15 @@
+# Claves: nunca se suben
+.env
+bot/.env
+
+# Datos descargados y registros del bot (se generan al ejecutar)
+cache/
+bot/registros/
+
+# Python y Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+.DS_Store

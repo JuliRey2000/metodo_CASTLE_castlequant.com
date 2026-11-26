@@ -440,6 +440,61 @@ def add_compounding_trades(trades: pl.DataFrame, capital: float, leverage: float
 
 
 # ============================================================================
+# ESCENARIOS CON MONTE CARLO
+# ============================================================================
+
+def monte_carlo_equity(trades: pl.DataFrame, capital: float, leverage: float, taker_fee: float,
+                       no_paths: int = 1000, block_size: int = 14, seed: int = 42) -> np.ndarray:
+    """
+    Escenarios de Monte Carlo: `no_paths` periodos sintéticos armados con bloques de `block_size` velas
+    de la propia estrategia, tomados al azar con reemplazo (los bloques conservan las rachas de volatilidad).
+    Devuelve la curva de capital neta de cada escenario: una fila por escenario y una columna por vela.
+    """
+    if block_size < 1 or block_size > len(trades):
+        raise ValueError(f"block_size debe estar entre 1 y {len(trades)} (es {block_size})")
+    rng = np.random.default_rng(seed)
+    # Factor por el que se multiplica el capital en cada vela (el mismo de add_compounding_trades)
+    growth = np.clip(1 + leverage * (np.exp(trades["trade_log_return"].to_numpy()) - 1)
+                     - leverage * taker_fee * trades["no_trades"].to_numpy(), 0, None)
+    n = len(growth)
+    no_blocks = int(np.ceil(n / block_size))
+    starts = rng.integers(0, n - block_size + 1, size=(no_paths, no_blocks))
+    idx = (starts[:, :, None] + np.arange(block_size)).reshape(no_paths, -1)[:, :n]
+    return capital * np.cumprod(growth[idx], axis=1)
+
+
+def monte_carlo_summary(paths: np.ndarray, capital: float) -> Dict[str, float]:
+    """Resumen de los escenarios: capital final, probabilidad de terminar con pérdida y caída máxima."""
+    final = paths[:, -1]
+    with_start = np.concatenate([np.full((len(paths), 1), float(capital)), paths], axis=1)
+    max_drawdown = (with_start / np.maximum.accumulate(with_start, axis=1) - 1).min(axis=1)
+    return {
+        "capital_p5": float(np.percentile(final, 5)),
+        "capital_mediana": float(np.median(final)),
+        "capital_p95": float(np.percentile(final, 95)),
+        "prob_perdida": float((final < capital).mean()),
+        "caida_max_mediana": float(np.median(max_drawdown)),
+        "caida_max_p5": float(np.percentile(max_drawdown, 5)),
+    }
+
+
+def plot_monte_carlo(paths: np.ndarray, real_curve=None, title: str = "", no_lines: int = 100) -> None:
+    """Abanico de escenarios con su mediana y los percentiles 5 y 95; opcionalmente, la curva que ocurrió."""
+    x = np.arange(paths.shape[1])
+    for path in paths[:no_lines]:
+        plt.plot(x, path, lw=0.6, color=AZUL, alpha=0.25)
+    plt.plot(x, np.percentile(paths, 95, axis=0), lw=1.3, ls="--", color=PALETA[3], label="Percentil 95")
+    plt.plot(x, np.median(paths, axis=0), lw=2, color=DORADO, label="Mediana")
+    plt.plot(x, np.percentile(paths, 5, axis=0), lw=1.3, ls="--", color=PALETA[2], label="Percentil 5")
+    if real_curve is not None:
+        plt.plot(x, np.asarray(real_curve, dtype=np.float64), lw=1.5, color=TEXTO, label="Lo que ocurrió")
+    plt.title(title)
+    plt.xlabel("Vela")
+    plt.legend()
+    plt.show()
+
+
+# ============================================================================
 # LIBRE DE SESGOS
 # ============================================================================
 

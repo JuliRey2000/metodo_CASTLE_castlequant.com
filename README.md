@@ -9,7 +9,7 @@ Los tres notebooks del reto **«De la Emoción a la Ecuación»** de Castle Quan
 | Notebook | Letras | Qué se construye | Dónde se ejecuta |
 |---|---|---|---|
 | `castle1_captura_alfa.ipynb` | **C · A** | **Captura:** velas de 1 minuto de Binance, agregadas a 1h, 6h y 12h. **Alfa:** un modelo lineal en PyTorch que predice el retorno de la próxima vela. | Google Colab o local |
-| `castle2_simulacion_tamano_sesgos.ipynb` | **S · T · L** | **Simulación:** de la predicción a las operaciones, con comisiones. **Tamaño:** constante, compuesto, Kelly y apalancamiento. **Libre de sesgos:** anticipación, selección y prueba de permutaciones. | Google Colab o local |
+| `castle2_simulacion_tamano_sesgos.ipynb` | **S · T · L** | **Simulación:** de la predicción a las operaciones, con comisiones. **Tamaño:** constante, compuesto, Kelly, apalancamiento y escenarios con Monte Carlo. **Libre de sesgos:** anticipación, selección y prueba de permutaciones. | Google Colab o local |
 | `castle3_ejecucion.ipynb` | **E** | **Ejecución:** el sistema que procesa los precios uno a uno y el bot conectado a Binance Demo, con avisos por Telegram. | Local |
 
 Los tres tienen las salidas guardadas: se pueden leer sin ejecutar nada.

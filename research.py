@@ -145,6 +145,16 @@ def plot_multiple_lines(df: pl.DataFrame, col_names: List[str], title: str = "")
     plt.show()
 
 
+def plot_in_out_of_sample(in_sample: pl.DataFrame, out_of_sample: pl.DataFrame, col: str, title: str = "") -> None:
+    """La misma curva en dos tramos seguidos: dentro de muestra y fuera de muestra."""
+    plt.plot(_x(in_sample), in_sample[col].to_numpy(), lw=1.3, color=AZUL, label="Dentro de muestra")
+    plt.plot(_x(out_of_sample), out_of_sample[col].to_numpy(), lw=1.3, color=PALETA[2], label="Fuera de muestra")
+    plt.axvline(_x(out_of_sample)[0], color=DORADO, lw=1.2, ls="--")
+    plt.title(title)
+    plt.legend()
+    plt.show()
+
+
 def plot_distribution(data: pl.DataFrame, col: str, no_bins: int = 100) -> None:
     plt.hist(data[col].drop_nulls().to_numpy(), bins=no_bins, color=AZUL)
     plt.title(f"Distribución de {col}")

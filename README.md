@@ -16,7 +16,7 @@ Los tres tienen las salidas guardadas: se pueden leer sin ejecutar nada.
 
 ## Lo que vas a encontrar
 
-El modelo se elige en un tramo de **validación** y se prueba una sola vez en un tramo que nunca vio (noviembre de 2025 a octubre de 2026). El resultado es honesto: **en la prueba el modelo pierde y no le gana al azar**. El notebook 2 muestra por qué, y esa es su lección. El bot del notebook 3 es **funcional, no rentable**: el alfa es la pieza que se cambia.
+El modelo se elige en un tramo de **validación** (dentro de muestra), donde la estrategia casi duplica el capital después de comisiones, y se prueba una sola vez en un tramo que nunca vio (noviembre de 2025 a octubre de 2026). El resultado es honesto: **fuera de muestra el modelo pierde y no le gana al azar**. El notebook 2 muestra las dos caras y plantea hipótesis sobre el tipo de mercado en el que funciona; la cuenta demo del notebook 3 sirve para recoger los datos que permiten comprobarlas. El bot es **funcional, no rentable**: el alfa es la pieza que se cambia.
 
 ## Cómo ejecutarlo
 
